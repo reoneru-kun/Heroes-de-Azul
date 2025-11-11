@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Héroes de Azul</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 71, 171, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 47, 108, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 97, 255, 0.2) 0%, transparent 50%),
+                linear-gradient(135deg, #00264d, #0047ab, #0066cc);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+        
+        .card {
+            width: 100%;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 
+                0 15px 30px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Banner Responsive con transición */
+        .banner {
+            width: 100%;
+            height: 0;
+            padding-bottom: 60%; /* Relación de aspecto 5:3 */
+            position: relative;
+            overflow: hidden;
+            background: white;
+        }
+        
+        .banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(45deg, transparent 30%, rgba(0, 71, 171, 0.03) 50%, transparent 70%);
+            animation: shine 3s infinite;
+            z-index: 3;
+        }
+        
+        .banner-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+        
+        .banner-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            filter: brightness(1.05) contrast(1.1);
+            transition: opacity 1.5s ease-in-out;
+            opacity: 0;
+        }
+        
+        .banner-image.active {
+            opacity: 1;
+        }
+        
+        .banner:hover .banner-image {
+            filter: brightness(1.08) contrast(1.15);
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Contenido Responsive */
+        .content {
+            padding: 25px 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .content {
+                padding: 30px 25px;
+            }
+        }
+        
+        .description {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+            line-height: 1.6;
+            font-size: 1rem;
+            position: relative;
+        }
+        
+        @media (min-width: 768px) {
+            .description {
+                font-size: 1.1rem;
+                margin-bottom: 30px;
+            }
+        }
+        
+        .description::after {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(to right, #00264d, #0047ab);
+            margin: 20px auto 0;
+            border-radius: 3px;
+        }
+        
+        .hashtag {
+            display: block;
+            font-weight: bold;
+            color: #00264d;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        @media (min-width: 768px) {
+            .hashtag {
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+            }
+        }
+        
+        /* Redes Sociales Responsive */
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        @media (min-width: 480px) {
+            .social-links {
+                gap: 20px;
+            }
+        }
+        
+        .social-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.4s ease;
+            padding: 12px;
+            border-radius: 12px;
+            width: 85px;
+            background: #e6f0ff; /* Azul claro para el fondo */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @media (min-width: 480px) {
+            .social-link {
+                width: 90px;
+                padding: 15px;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .social-link {
+                width: 100px;
+            }
+        }
+        
+        .social-link::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .social-link:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .social-link:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+        
+        .social-link.facebook:hover {
+            background: #3b5998;
+        }
+        
+        .social-link.whatsapp:hover {
+            background: #25D366;
+        }
+        
+        .social-link.instagram:hover {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+        }
+        
+        .social-link.youtube:hover {
+            background: #FF0000;
+        }
+        
+        .social-link.x:hover {
+            background: #000000;
+        }
+        
+        .social-link.website:hover {
+            background: #00264d;
+        }
+        
+        .social-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+            /* Los iconos mantienen su color original */
+        }
+        
+        .social-icon-img {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+            object-fit: contain;
+            transition: transform 0.5s ease, opacity 0.3s ease;
+            /* La imagen de X mantiene su color original */
+        }
+        
+        .social-icon-img.default {
+            opacity: 1;
+        }
+        
+        .social-icon-img.hover {
+            position: absolute;
+            opacity: 0;
+            transform: scale(0.8) rotate(-180deg);
+        }
+        
+        .social-link:hover .social-icon-img.default {
+            opacity: 0;
+            transform: scale(1.2) rotate(180deg);
+        }
+        
+        .social-link:hover .social-icon-img.hover {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+        
+        @media (min-width: 480px) {
+            .social-icon {
+                font-size: 2.2rem;
+                margin-bottom: 10px;
+            }
+            .social-icon-img {
+                width: 35px;
+                height: 35px;
+                margin-bottom: 10px;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .social-icon {
+                font-size: 2.5rem;
+            }
+            .social-icon-img {
+                width: 40px;
+                height: 40px;
+            }
+        }
+        
+        .social-name {
+            font-weight: 600;
+            font-size: 0.8rem;
+            position: relative;
+            z-index: 1;
+            color: #333; /* Color oscuro para el texto */
+        }
+        
+        @media (min-width: 480px) {
+            .social-name {
+                font-size: 0.85rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .social-name {
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Footer Responsive */
+        .footer {
+            text-align: center;
+            padding: 18px 15px;
+            background: #f5f5f5;
+            color: #666;
+            font-size: 0.85rem;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        @media (min-width: 768px) {
+            .footer {
+                padding: 20px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        .footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #ddd, transparent);
+        }
+        
+        .footer-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 10px;
+            filter: brightness(1.05) contrast(1.1);
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0047ab;
+        }
+        
+        .pulse {
+            animation: pulse-icon 2s infinite;
+        }
+        
+        @keyframes pulse-icon {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Logo de respaldo */
+        .logo-fallback {
+            display: none;
+            text-align: center;
+            color: #00264d;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background: white;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            padding: 20px;
+        }
+        
+        .logo-fallback h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo-fallback h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #0047ab;
+        }
+        
+        @media (min-width: 480px) {
+            .logo-fallback h1 {
+                font-size: 2.3rem;
+            }
+            
+            .logo-fallback h2 {
+                font-size: 1.7rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .logo-fallback h1 {
+                font-size: 2.5rem;
+            }
+            
+            .logo-fallback h2 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        /* Elementos flotantes optimizados para móviles */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float-element 15s infinite linear;
+        }
+        
+        .floating-element:nth-child(1) {
+            width: 60px;
+            height: 60px;
+            top: 10%;
+            left: 10%;
+            animation-duration: 20s;
+        }
+        
+        .floating-element:nth-child(2) {
+            width: 80px;
+            height: 80px;
+            top: 60%;
+            left: 80%;
+            animation-duration: 25s;
+            animation-delay: -5s;
+        }
+        
+        .floating-element:nth-child(3) {
+            width: 40px;
+            height: 40px;
+            top: 80%;
+            left: 20%;
+            animation-duration: 15s;
+            animation-delay: -10s;
+        }
+        
+        @media (min-width: 768px) {
+            .floating-element:nth-child(1) {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .floating-element:nth-child(2) {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .floating-element:nth-child(3) {
+                width: 60px;
+                height: 60px;
+            }
+        }
+        
+        @keyframes float-element {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            33% {
+                transform: translate(30px, -50px) rotate(120deg);
+            }
+            66% {
+                transform: translate(-20px, 20px) rotate(240deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+        
+        /* Mejoras de rendimiento para móviles */
+        @media (max-width: 767px) {
+            .card:hover {
+                transform: translateY(-5px);
+            }
+            
+            .social-link:hover {
+                transform: translateY(-5px) scale(1.03);
+            }
+        }
+        
+        /* Soporte para orientación landscape en móviles */
+        @media (max-height: 600px) and (orientation: landscape) {
+            body {
+                padding: 10px;
+                min-height: 100vh;
+            }
+            
+            .card {
+                max-width: 90%;
+            }
+            
+            .banner {
+                padding-bottom: 40%;
+            }
+            
+            .content {
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+    
+    <div class="card">
+        <div class="banner">
+            <div class="banner-content">
+                <img src="banner.png" alt="Héroes de Azul" class="banner-image active" id="banner1">
+                <img src="bannerb.png" alt="Héroes de Azul" class="banner-image" id="banner2">
+                <div class="logo-fallback" id="fallbackLogo">
+                    <h1>Héroes</h1>
+                    <h2>de Azul</h2>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="description">
+                <span class="hashtag">#HéroesDeAzul #CubaSegura</span>
+                Somos la Policía Nacional Revolucionaria. Nuestra misión es garantizar el orden, la tranquilidad ciudadana y proteger a nuestro pueblo.<br><br>
+                <strong>Su seguridad es nuestra mayor misión.</strong>
+            </div>
+            
+            <div class="social-links">
+                <a href="https://www.facebook.com/share/1A7CYEkjmA/" target="_blank" class="social-link facebook pulse">
+                    <i class="fab fa-facebook social-icon"></i>
+                    <span class="social-name">Facebook</span>
+                </a>
+                
+                <a href="https://whatsapp.com/channel/0029VaJTodz545utUi6M2d3I" target="_blank" class="social-link whatsapp pulse">
+                    <i class="fab fa-whatsapp social-icon"></i>
+                    <span class="social-name">WhatsApp</span>
+                </a>
+                
+                <a href="https://www.instagram.com/heroesdeazulencuba?igsh=MXA1bmd3eXlyc2xweg==" target="_blank" class="social-link instagram pulse">
+                    <i class="fab fa-instagram social-icon"></i>
+                    <span class="social-name">Instagram</span>
+                </a>
+                
+                <a href="https://youtube.com/@heroesdeazulencuba?si=axlOmWJzy0sUak1f" target="_blank" class="social-link youtube pulse">
+                    <i class="fab fa-youtube social-icon"></i>
+                    <span class="social-name">YouTube</span>
+                </a>
+                
+                <a href="https://x.com/HeroesdeAzulCub?t=FHDr3NjnF3AQUu250aur8A&s=09" target="_blank" class="social-link x pulse">
+                    <div style="position: relative; display: flex; justify-content: center; align-items: center; width: 32px; height: 32px;">
+                        <img src="xb.png" alt="X" class="social-icon-img default">
+                        <img src="x.png" alt="X" class="social-icon-img hover">
+                    </div>
+                    <span class="social-name">X</span>
+                </a>
+                
+                <a href="https://pnr.minint.gob.cu" target="_blank" class="social-link website pulse">
+                    <i class="fas fa-globe social-icon"></i>
+                    <span class="social-name">Sitio Web</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <img src="logo.png" alt="Logo Héroes de Azul" class="footer-logo" onerror="this.style.display='none'">
+            <p>© 2025 Héroes de Azul. Todos los derechos reservados.</p>
+        </div>
+    </div>
+
+    <script>
+        // Efecto de aparición suave al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const card = document.querySelector('.card');
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+            
+            // Efecto de rotación en los iconos al pasar el ratón
+            const socialIcons = document.querySelectorAll('.social-icon, .social-icon-img');
+            socialIcons.forEach(icon => {
+                icon.addEventListener('mouseenter', function() {
+                    this.style.transition = 'transform 0.5s ease';
+                    this.style.transform = 'rotate(360deg) scale(1.2)';
+                });
+                
+                icon.addEventListener('mouseleave', function() {
+                    this.style.transform = 'rotate(0deg) scale(1)';
+                });
+            });
+            
+            // Optimización para dispositivos táctiles
+            if ('ontouchstart' in window) {
+                document.body.classList.add('touch-device');
+            }
+            
+            // Banner con transición automática
+            let currentBanner = 1;
+            const banner1 = document.getElementById('banner1');
+            const banner2 = document.getElementById('banner2');
+            
+            function switchBanner() {
+                if (currentBanner === 1) {
+                    banner1.classList.remove('active');
+                    banner2.classList.add('active');
+                    currentBanner = 2;
+                } else {
+                    banner2.classList.remove('active');
+                    banner1.classList.add('active');
+                    currentBanner = 1;
+                }
+            }
+            
+            // Cambiar banner cada 5 segundos
+            setInterval(switchBanner, 5000);
+        });
+        
+        // Función para mostrar el logo alternativo si la imagen no carga
+        function showFallbackLogo() {
+            document.getElementById('fallbackLogo').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
